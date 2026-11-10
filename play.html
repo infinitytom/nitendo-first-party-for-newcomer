@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>模拟器与重编译 · 任天堂第一方入坑指南</title>
+<meta name="description" content="如何合法导出自己拥有的任天堂游戏，并通过模拟器或重编译原生移植在 PC 上游玩。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%23e4002b'/><text x='50' y='72' font-size='62' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='900'>入</text></svg>">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body data-page="play">
+<header class="top" id="top"></header>
+<main class="wrap page">
+  <h1>用模拟器和重编译，玩自己导出的游戏</h1>
+  <p class="lead">你已经拥有的卡带和光盘，可以在电脑、掌机上以更高的分辨率和帧率再玩一遍。</p>
+  <div class="note warn"><b>先说清楚：</b>本页只讨论<b>游玩你本人购买并亲手导出的游戏</b>。本站不提供、也不会指引任何 ROM、系统密钥或破解文件的下载；从网上下载游戏镜像属于盗版。各国家和地区对「绕过技术保护措施」和「私人备份」的法律规定不同，以下内容不构成法律意见，请自行了解当地法规并自担风险。</div>
+  <div class="toc"><a href="#how">整体流程</a><a href="#dump">① 导出游戏</a><a href="#emu">② 模拟器</a><a href="#recomp">③ 重编译与原生移植</a><a href="#faq">常见问题</a></div>
+
+  <h2 id="how">整体流程</h2>
+  <div class="flow">
+    <div><span class="n">第 1 步</span><h4>导出（Dump）</h4><p>用读卡器或你自己的主机，把正版卡带/光盘读成一个文件（俗称 ROM / 镜像）。</p></div>
+    <div><span class="n">第 2 步</span><h4>选择运行方式</h4><p><b>模拟器</b>：通用，一个程序跑一整台主机的游戏。<b>重编译/移植</b>：只支持特定游戏，但体验接近原生 PC 游戏。</p></div>
+    <div><span class="n">第 3 步</span><h4>设置与游玩</h4><p>配置手柄、分辨率，按需加载高清材质或 Mod。存档记得备份。</p></div>
+  </div>
+
+  <h2 id="dump">① 导出自己的游戏</h2>
+  <p class="lead">越老的平台越简单；越新的平台门槛和风险越高。</p>
+  <div class="tbl"><table>
+    <tr><th>平台</th><th>常见的导出方式</th><th>难度</th></tr>
+    <tr><td><b>Game Boy / GBC / GBA</b></td><td>USB 卡带读取器（如 GB Operator、GBxCart RW）：插上卡带，连电脑，一键读出游戏和存档。</td><td>很低</td></tr>
+    <tr><td><b>FC / SFC / N64</b></td><td>开源的多合一卡带读取器（Open Source Cartridge Reader）或对应平台的专用读取器。</td><td>低–中</td></tr>
+    <tr><td><b>NDS</b></td><td>在自己的 3DS（或 DSi）上用自制软件读取卡带。</td><td>中</td></tr>
+    <tr><td><b>3DS</b></td><td>在自己安装了自制固件的 3DS 上，用 GodMode9 导出卡带或已购数字版。</td><td>中</td></tr>
+    <tr><td><b>GameCube / Wii</b></td><td>在自己的 Wii 上通过 Homebrew Channel 运行 CleanRip，把光盘读到 U 盘或 SD 卡。Dolphin 官网有完整说明。</td><td>中</td></tr>
+    <tr><td><b>Wii U</b></td><td>在自己的 Wii U 上用自制软件（如 Dumpling）导出光盘和数字版。Cemu 官方文档有说明。</td><td>中</td></tr>
+    <tr><td><b>Switch</b></td><td>需要一台能运行自制系统的自有主机来导出游戏和本机密钥。这违反任天堂用户协议，联网有封号风险，在部分地区规避保护措施本身就有法律风险。</td><td>高 · 风险大</td></tr>
+  </table></div>
+  <div class="note"><b>建议：</b>导出后把文件和原卡带一一对应保存好；卖掉卡带后就不应再保留对应的备份。老卡带的电池存档也可以顺手读出来备份，防止电池没电丢档。</div>
+
+  <h2 id="emu">② 模拟器</h2>
+  <p class="lead">按平台列出仍在维护、口碑稳定的项目，标有「首选」的是新手直接用就行的那个。请只从项目官网或官方仓库下载，谨防捆绑软件的仿冒站。</p>
+  <div id="emus"></div>
+  <div class="note"><b>不想折腾？</b>如果只是想玩 FC / SFC / GB / N64 / GBA / GameCube 的经典作品，<a href="buy.html#nso">NSO 会员</a>是官方方案；Steam Deck 等 PC 掌机运行 Wii U 及更早的平台都很轻松。</div>
+
+  <h2 id="recomp">③ 重编译与原生移植</h2>
+  <div class="prose">
+    <p>这是近几年最令人兴奋的方向。它不是「模拟一台主机」，而是让游戏变成一个真正的 PC 程序：</p>
+    <ul>
+      <li><b>反编译移植（Decompilation）：</b>爱好者把游戏的机器码逐函数还原成可读的源代码，再把它移植到 PC。代表：《时之笛》的 Ship of Harkinian。</li>
+      <li><b>静态重编译（Static Recompilation）：</b>用工具把原游戏的机器码自动翻译成 PC 可执行代码，再接上现代渲染器。代表：Zelda 64: Recompiled。</li>
+      <li><b>逆向重写：</b>对照原版行为用 C 语言重新实现，SFC 时代的几部名作走的是这条路。</li>
+    </ul>
+    <p>共同的好处：<b>原生宽屏/超宽屏、高帧率、4K、极低输入延迟、陀螺仪瞄准、丰富的 Mod</b>。这些项目本身<b>不包含任何游戏素材</b>——首次启动时需要你提供自己导出的 ROM，程序从中提取资源。</p>
+    <p>下面共收录 <b id="portcount">0</b> 个项目，按系列分组。项目更新很快，版本与完成度请以各自仓库为准。</p>
+  </div>
+  <div id="ports"></div>
+  <h3>工具链与导航</h3>
+  <div id="porttools"></div>
+  <div class="prose">
+    <h3>模拟器还是重编译？</h3>
+    <ul>
+      <li>你想玩的游戏<b>有原生移植</b> → 优先用移植版，体验最好。</li>
+      <li>没有 → 用对应平台的模拟器。</li>
+      <li>不想导出、不想折腾 → 看看 <a href="buy.html#nso">NSO 会员游戏库</a>或官方重制版（比如 Switch 2 的《时之笛》重制版）。</li>
+    </ul>
+  </div>
+
+  <h2 id="faq">常见问题</h2>
+  <div class="two">
+    <div class="box"><h3>我有正版卡带，可以直接下载对应 ROM 吗？</h3><p>不建议。下载他人上传的镜像与「自己备份」在法律上是两回事，网上的文件也常被篡改或夹带恶意程序。请自己导出。</p></div>
+    <div class="box"><h3>需要多好的电脑？</h3><p>GBA、NDS、N64 移植版用核显就够；Dolphin 和 Cemu 需要一颗单核性能不错的 CPU 和入门独显；Switch 模拟对配置要求最高。</p></div>
+    <div class="box"><h3>模拟器里的存档能和主机互通吗？</h3><p>老平台（GB/GBA/NDS/GC/Wii）一般可以，用导出游戏的同一套工具即可读写存档。新平台较麻烦，且有风险。</p></div>
+    <div class="box"><h3>为什么不多写写 Switch 模拟？</h3><p>Switch 仍是在售平台，游戏都能方便地买到正版，而相关模拟器项目法律风险高、变动频繁。本站建议在主机上玩 Switch 游戏。</p></div>
+  </div>
+</main>
+<footer id="foot"></footer>
+<script src="assets/data.js"></script>
+<script src="assets/projects.js"></script>
+<script src="assets/photos.js"></script>
+<script src="assets/scenes.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

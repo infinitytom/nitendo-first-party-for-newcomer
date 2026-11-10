@@ -1,0 +1,24 @@
+name: 下载自由许可图片
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["tools/fetch_images.py", ".github/workflows/fetch-images.yml"]
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python tools/fetch_images.py
+      - name: 提交图片
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add images assets/photos.js
+          git diff --cached --quiet || git commit -m "更新 Wikimedia Commons 主机照片"
+          git push
