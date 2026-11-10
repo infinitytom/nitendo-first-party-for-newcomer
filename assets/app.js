@@ -1,5 +1,5 @@
 (function(){
-  var S = window.SERIES || [], PH = window.PHOTOS || {}, PL = window.PLATFORMS || [];
+  var S = window.SERIES || [], PH = window.PHOTOS || {}, BX = window.BOXART || {}, PL = window.PLATFORMS || [];
   var page = document.body.dataset.page;
   var $ = function(s){return document.querySelector(s)};
   function plat(id){return PL.filter(function(p){return p.id===id})[0]}
@@ -12,11 +12,14 @@
   var credits = Object.keys(PH).map(function(k){var p=PH[k];return '<a href="'+p.url+'" target="_blank" rel="noopener">'+(plat(k)||{name:k}).name+'</a>（'+p.artist+'，'+p.license+'）'}).join("、");
   $("#foot").innerHTML = '<div class="wrap">本站为玩家自制的非官方指南，与任天堂株式会社无任何关联。文中游戏名称、角色及商标归各自权利人所有。' +
     '本站不提供任何游戏 ROM、密钥或破解文件的下载。<br>系列插画为本站原创的代码生成图形。' +
-    (credits?'主机照片来自 Wikimedia Commons：'+credits+'。':'')+'<br>内容更新于 '+(window.UPDATED||"")+'，发售日期与价格请以官方信息为准。</div>';
+    (credits?'主机照片来自 Wikimedia Commons：'+credits+'。':'')+(Object.keys(BX).length?'<br>游戏封面图取自英文维基百科各游戏条目，版权归任天堂及各自权利人所有，本站仅用于介绍与评论；如权利人要求将立即移除。':'')+'<br>内容更新于 '+(window.UPDATED||"")+'，发售日期与价格请以官方信息为准。</div>';
 
+  function slug(t){return t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")}
+  function box(o){return o && o.w && BX[slug(o.w)]}
+  function firstBox(s){for(var i=0;i<s.order.length;i++){var b=box(s.order[i]);if(b)return b}}
   function cover(s){
     return '<div class="cover">'+window.scene(s.id)+'<span class="en">'+s.en+'</span>' +
-      '<img src="images/'+s.id+'.jpg" alt="" loading="lazy" onerror="this.remove()"></div>';
+      (firstBox(s)?'<img class="case" src="'+firstBox(s).file+'" alt="" loading="lazy">':'')+'<img src="images/'+s.id+'.jpg" alt="" loading="lazy" onerror="this.remove()"></div>';
   }
   function links(list){
     return '<div class="links">'+list.map(function(l){
@@ -61,7 +64,7 @@
     var born=(window.BORN||{})[s.id], bp=plat(born);
     document.title = s.zh+"入坑顺序 · 任天堂第一方入坑指南";
     $("#main").innerHTML =
-      '<section class="shero">'+window.scene(s.id)+'<div class="shade"></div><div class="wrap"><div class="en">'+s.en+'</div><h1>'+s.zh+'</h1><p>'+s.tag+'</p></div></section>' +
+      '<section class="shero">'+window.scene(s.id)+'<div class="shade"></div><div class="wrap"><div><div class="en">'+s.en+'</div><h1>'+s.zh+'</h1><p>'+s.tag+'</p></div>'+(firstBox(s)?'<img class="case" src="'+firstBox(s).file+'" alt="'+s.order[0].t+'">':'')+'</div></section>' +
       '<div class="wrap"><div class="facts">' +
         [["系列诞生",s.since+" 年"],["类型",s.genre],["新手友好度",s.ease],["时间投入",s.time]].map(function(f){return '<div class="fact rv"><b>'+f[0]+'</b>'+f[1]+'</div>'}).join("") +
       '</div>' +
@@ -69,7 +72,7 @@
       (bp?'<aside class="born rv">'+photo(born,"lg")+'<div><small>诞生平台</small><b>'+bp.name+'</b><span>'+bp.year+' 年发售</span></div></aside>':'')+'</div>' +
       '<div class="photo prose"><img src="images/'+s.id+'.jpg" alt="'+s.zh+'" onerror="this.parentNode.remove()"></div>' +
       '<h2 class="sec">推荐入坑顺序</h2><p class="lead">从上往下玩。第一部喜欢了再继续，不喜欢就及时止损。</p>' +
-      '<ol class="steps">'+s.order.map(function(o,n){return '<li class="rv"><img class="shot" src="images/games/'+s.id+'-'+(n+1)+'.jpg" alt="'+o.t+'" loading="lazy" onerror="this.remove()"><h4>《'+o.t+'》</h4><div class="plat">平台：'+o.plat+'</div><p>'+o.why+'</p></li>'}).join("")+'</ol>' +
+      '<ol class="steps">'+s.order.map(function(o,n){return '<li class="rv">'+(box(o)?'<a class="boxart" href="'+box(o).url+'" target="_blank" rel="noopener" title="图片来源：维基百科"><img src="'+box(o).file+'" alt="《'+o.t+'》封面" loading="lazy"></a>':'')+'<img class="shot" src="images/games/'+s.id+'-'+(n+1)+'.jpg" alt="'+o.t+'" loading="lazy" onerror="this.remove()"><h4>《'+o.t+'》</h4><div class="plat">平台：'+o.plat+'</div><p>'+o.why+'</p></li>'}).join("")+'</ol>' +
       '<div class="note rv"><b>小贴士：</b>'+s.tip+'</div>' +
       '<div class="note rv"><b>近况：</b>'+s.news+'</div>' +
       ((window.LINKS||{})[s.id] ? '<h2 class="sec">相关网站</h2><p class="lead">攻略、资料、工具与模组。均为第三方站点，模组请配合自己拥有的游戏使用。</p>'+links(window.LINKS[s.id]) : '') +

@@ -1,9 +1,9 @@
-name: 下载自由许可图片
+name: 下载图片
 on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ["tools/fetch_images.py", ".github/workflows/fetch-images.yml"]
+    paths: ["tools/fetch_images.py", "tools/fetch_boxart.py", "assets/data.js", ".github/workflows/fetch-images.yml"]
 permissions:
   contents: write
 jobs:
@@ -14,11 +14,14 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - run: pip install pillow
+      - run: python tools/fetch_boxart.py
       - run: python tools/fetch_images.py
+        if: ${{ hashFiles('assets/photos.js') == '' || github.event_name == 'workflow_dispatch' }}
       - name: 提交图片
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add images assets/photos.js
-          git diff --cached --quiet || git commit -m "更新 Wikimedia Commons 主机照片"
+          git add images assets/photos.js assets/boxart.js
+          git diff --cached --quiet || git commit -m "更新游戏封面与主机照片"
           git push
