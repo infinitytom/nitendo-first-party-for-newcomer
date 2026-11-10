@@ -24,6 +24,10 @@
 - 系列封面与首屏是代码生成的原创动画插画（`assets/scenes.js`）。
 - 主机照片来自 Wikimedia Commons（公有领域 / CC BY / CC BY-SA），由 `tools/fetch_images.py` 下载到 `images/`，署名写入 `assets/photos.js` 并显示在页脚。修改脚本并推送后 GitHub Actions 会自动重新下载，也可以本地运行 `python tools/fetch_images.py`。
 
+### 游戏封面
+
+每部推荐游戏的封面图取自英文维基百科对应条目的主图。`assets/data.js` 里每个入坑作品的 `w` 字段就是条目名，推送后 GitHub Actions 会运行 `tools/fetch_boxart.py` 下载到 `images/box/`，并写入 `assets/boxart.js`。新增游戏时填上 `w` 即可自动配图。封面版权归任天堂及各自权利人所有。
+
 ### 使用自己的游戏截图
 
 把你在主机上截的图放进 `images/`，页面会自动显示，不需要改代码：
