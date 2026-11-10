@@ -5,15 +5,15 @@
 结果：图片保存到 images/hw-<平台>.<扩展名>，署名信息写入 assets/photos.js（页脚会自动列出来源）。
 GitHub Actions 会在本文件变化时自动运行；也可以在 Actions 页面手动触发。
 """
-import json, os, re, sys, urllib.parse, urllib.request, html
+import json, os, re, sys, time, urllib.error, urllib.parse, urllib.request, html
 
 API = "https://commons.wikimedia.org/w/api.php"
-UA = {"User-Agent": "nintendo-first-party-guide/1.0 (GitHub Pages fan site; image fetch script)"}
+UA = {"User-Agent": "NintendoGuideImageFetch/1.1 (https://github.com/infinitytom/nitendo-first-party-for-newcomer)"}
 OK = re.compile(r"^(public domain|pd|cc0|cc[ -]by(-sa)?[ -]\d)", re.I)
 
 # 每个平台按顺序尝试的文件名；都不存在时用 search 关键词搜索。
 SLOTS = {
- "fc":     (["Nintendo-Famicom-Console-Set-FL.png", "NES-Console-Set.png", "NES-Console-Set.jpg"], "Evan-Amos Famicom console"),
+ "fc":     (["Nintendo-Famicom-Console-Set-FL.png", "NES-Console-Set.png", "NES-Console-Set.jpg"], "Famicom console Evan-Amos"),
  "gb":     (["Game-Boy-FL.png", "Game-Boy-FL.jpg"], "Evan-Amos Game Boy original"),
  "sfc":    (["Nintendo-Super-Famicom-Set-FL.png", "Super-Famicom-Console-Set.jpg", "SNES-Mod1-Console-Set.png", "SNES-Mod1-Console-Set.jpg"], "Evan-Amos Super Famicom console"),
  "n64":    (["Nintendo-64-wController-L.png", "N64-Console-Set.png", "Nintendo-64-wController-L.jpg"], "Evan-Amos Nintendo 64 console"),
@@ -27,17 +27,29 @@ SLOTS = {
  "switch2":([], "Nintendo Switch 2 console"),
 }
 
+def get(url):
+    """带限速与 429 重试的请求。"""
+    for attempt in range(5):
+        time.sleep(2 + attempt * 15)
+        try:
+            with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=120) as r:
+                return r.read()
+        except urllib.error.HTTPError as e:
+            if e.code not in (429, 503) or attempt == 4: raise
+            print(f"  {e.code}，稍后重试…")
+
 def api(**params):
-    params.update(format="json", prop="imageinfo", iiprop="url|extmetadata", iiurlwidth="640", action="query")
-    req = urllib.request.Request(API + "?" + urllib.parse.urlencode(params), headers=UA)
-    with urllib.request.urlopen(req, timeout=60) as r:
-        return json.load(r).get("query", {}).get("pages", {})
+    params.update(format="json", prop="imageinfo", iiprop="url|extmetadata", iiurlwidth="500", action="query")
+    data = json.loads(get(API + "?" + urllib.parse.urlencode(params)))
+    if "error" in data: print("  API 错误：", data["error"].get("info"))
+    return data.get("query", {}).get("pages", {})
 
 def clean(s):
     return html.unescape(re.sub(r"<[^>]+>", "", s or "")).strip()
 
 def pick(pages, order=None):
     items = [p for p in pages.values() if "imageinfo" in p]
+    print("  候选：", [p["title"] + " / " + clean(p["imageinfo"][0].get("extmetadata", {}).get("LicenseShortName", {}).get("value")) for p in items][:8])
     if order:
         norm = lambda t: t.replace("_", " ").lower()
         items.sort(key=lambda p: order.index(norm(p["title"])) if norm(p["title"]) in order else 99)
@@ -67,9 +79,8 @@ def main():
                 print(f"[{slot}] 没有找到符合许可的图片"); continue
             ext = ".png" if hit["thumb"].lower().endswith(".png") else ".jpg"
             path = f"images/hw-{slot}{ext}"
-            req = urllib.request.Request(hit["thumb"], headers=UA)
-            with urllib.request.urlopen(req, timeout=120) as r, open(path, "wb") as f:
-                f.write(r.read())
+            with open(path, "wb") as f:
+                f.write(get(hit["thumb"]))
             out[slot] = {"file": path, "title": hit["title"], "artist": hit["artist"], "license": hit["license"], "url": hit["url"]}
             print(f"[{slot}] {hit['title']} — {hit['artist']} — {hit['license']}")
         except Exception as e:
