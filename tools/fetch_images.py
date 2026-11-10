@@ -57,7 +57,7 @@ def pick(pages, order=None):
     for p in items:
         ii = p["imageinfo"][0]; meta = ii.get("extmetadata", {})
         lic = clean(meta.get("LicenseShortName", {}).get("value"))
-        if not OK.match(lic) or not re.search(r"\.(png|jpe?g)$", ii.get("url", ""), re.I):
+        if not OK.match(lic) or not re.search(r"\.(png|jpe?g)$", p["title"], re.I):
             print("  跳过：", ascii(p["title"]), ascii(lic), ascii(ii.get("url", ""))[-40:]); continue
         return {"title": p["title"], "thumb": ii.get("thumburl") or ii["url"], "url": ii["descriptionurl"],
                 "artist": clean(meta.get("Artist", {}).get("value"))[:60] or "未署名", "license": lic}
@@ -76,7 +76,7 @@ def main():
                 hit = pick(api(generator="search", gsrnamespace="6", gsrlimit="15", gsrsearch=query + " filetype:bitmap"))
             if not hit:
                 print(f"[{slot}] 没有找到符合许可的图片"); continue
-            ext = ".png" if hit["thumb"].lower().endswith(".png") else ".jpg"
+            ext = ".png" if hit["title"].lower().endswith(".png") else ".jpg"
             path = f"images/hw-{slot}{ext}"
             with open(path, "wb") as f:
                 f.write(get(hit["thumb"]))
