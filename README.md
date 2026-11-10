@@ -24,6 +24,15 @@
 - 系列封面与首屏是代码生成的原创动画插画（`assets/scenes.js`）。
 - 主机照片来自 Wikimedia Commons（公有领域 / CC BY / CC BY-SA），由 `tools/fetch_images.py` 下载到 `images/`，署名写入 `assets/photos.js` 并显示在页脚。修改脚本并推送后 GitHub Actions 会自动重新下载，也可以本地运行 `python tools/fetch_images.py`。
 
+### 使用自己的游戏截图
+
+把你在主机上截的图放进 `images/`，页面会自动显示，不需要改代码：
+
+- **系列封面**：`images/<系列 id>.jpg`，如 `images/zelda.jpg`（替换卡片封面，并显示在系列页简介下方）。
+- **每一部游戏**：`images/games/<系列 id>-<序号>.jpg`，序号是该游戏在入坑顺序里的位置，如 `images/games/zelda-1.jpg` 是《旷野之息》，`images/games/zelda-2.jpg` 是《王国之泪》。
+
+系列 id：mario、zelda、pokemon、mariokart、smash、animalcrossing、splatoon、kirby、metroid、fireemblem、xenoblade、donkeykong、pikmin。建议 16:9、宽 1280px 左右的 JPG。
+
 ## 修改内容
 
 - **系列介绍与入坑顺序**：全部在 `assets/data.js`，按现有格式增删即可。

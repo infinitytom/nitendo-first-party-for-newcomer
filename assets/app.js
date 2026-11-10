@@ -69,7 +69,7 @@
       (bp?'<aside class="born rv">'+photo(born,"lg")+'<div><small>诞生平台</small><b>'+bp.name+'</b><span>'+bp.year+' 年发售</span></div></aside>':'')+'</div>' +
       '<div class="photo prose"><img src="images/'+s.id+'.jpg" alt="'+s.zh+'" onerror="this.parentNode.remove()"></div>' +
       '<h2 class="sec">推荐入坑顺序</h2><p class="lead">从上往下玩。第一部喜欢了再继续，不喜欢就及时止损。</p>' +
-      '<ol class="steps">'+s.order.map(function(o){return '<li class="rv"><h4>《'+o.t+'》</h4><div class="plat">平台：'+o.plat+'</div><p>'+o.why+'</p></li>'}).join("")+'</ol>' +
+      '<ol class="steps">'+s.order.map(function(o,n){return '<li class="rv"><img class="shot" src="images/games/'+s.id+'-'+(n+1)+'.jpg" alt="'+o.t+'" loading="lazy" onerror="this.remove()"><h4>《'+o.t+'》</h4><div class="plat">平台：'+o.plat+'</div><p>'+o.why+'</p></li>'}).join("")+'</ol>' +
       '<div class="note rv"><b>小贴士：</b>'+s.tip+'</div>' +
       '<div class="note rv"><b>近况：</b>'+s.news+'</div>' +
       ((window.LINKS||{})[s.id] ? '<h2 class="sec">相关网站</h2><p class="lead">攻略、资料、工具与模组。均为第三方站点，模组请配合自己拥有的游戏使用。</p>'+links(window.LINKS[s.id]) : '') +

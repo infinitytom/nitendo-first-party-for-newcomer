@@ -164,6 +164,8 @@ p.lead a{color:var(--accent);font-weight:700}
 .steps li{counter-increment:s;position:relative;background:var(--solid);border:1px solid var(--line);border-radius:var(--radius);padding:16px 20px 16px 76px;margin-bottom:14px;box-shadow:var(--shadow);transition:opacity .7s,transform .35s cubic-bezier(.2,.9,.3,1.2),box-shadow .3s}
 .steps li.in:hover{transform:translateX(6px);box-shadow:var(--shadow2)}
 .steps li::before{content:counter(s);position:absolute;left:18px;top:16px;width:40px;height:40px;border-radius:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-weight:900;font-size:18px;display:grid;place-items:center;box-shadow:0 6px 14px rgba(228,0,43,.3)}
+.steps .shot{float:right;width:240px;aspect-ratio:16/9;object-fit:cover;border-radius:12px;margin:0 0 6px 18px;box-shadow:var(--shadow)}
+.steps li::after{content:"";display:block;clear:both}
 .steps h4{margin:0 0 2px;font-size:18px;font-weight:900}
 .steps .plat{font-size:12.5px;font-weight:700;color:var(--sub)}
 .steps p{margin:6px 0 0;color:var(--sub);font-size:15px}
@@ -232,5 +234,5 @@ footer{margin-top:70px;border-top:1px solid var(--line);padding:26px 0 44px;colo
 footer a{color:inherit}
 
 @media (max-width:860px){.hero{grid-template-columns:1fr;gap:28px;padding-top:36px}.stage{transform:none;aspect-ratio:16/11}.intro{grid-template-columns:1fr;gap:0}.born{margin-top:8px;display:flex;gap:14px;align-items:center}.born .hw{width:120px;flex:none}}
-@media (max-width:560px){.wrap{padding:0 16px}.logo span{display:none}.steps li{padding-left:66px}.steps::before{left:33px}.toc{position:static}.emu header .hw{width:84px}.shero{min-height:280px}}
+@media (max-width:560px){.steps .shot{float:none;width:100%;margin:0 0 10px}.wrap{padding:0 16px}.logo span{display:none}.steps li{padding-left:66px}.steps::before{left:33px}.toc{position:static}.emu header .hw{width:84px}.shero{min-height:280px}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
