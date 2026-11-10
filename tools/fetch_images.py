@@ -24,7 +24,7 @@ SLOTS = {
  "3ds":    (["Nintendo-3DS-AquaOpen.png", "Nintendo-3DS-AquaOpen.jpg"], "Evan-Amos Nintendo 3DS"),
  "wiiu":   (["Wii-U-Console-Set-Blk.png", "Wii U Console and Gamepad.png", "Wii-U-Console-Set-Blk.jpg"], "Evan-Amos Wii U console"),
  "switch": (["Nintendo-Switch-Console-Docked-wJoyConRB.jpg", "Nintendo-Switch-wJoyCons-BlRd-Standing-FL.jpg", "Nintendo Switch Console.png"], "Evan-Amos Nintendo Switch console"),
- "switch2":([], "Nintendo Switch 2 console"),
+ "switch2":(["Nintendo Switch 2 20250605 HOF4739 RAW-Export.png"], "Nintendo Switch 2 console"),
 }
 
 def get(url):
@@ -45,11 +45,10 @@ def api(**params):
     return data.get("query", {}).get("pages", {})
 
 def clean(s):
-    return html.unescape(re.sub(r"<[^>]+>", "", s or "")).strip()
+    return re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", "", s or ""))).strip()
 
 def pick(pages, order=None):
     items = [p for p in pages.values() if "imageinfo" in p]
-    print("  候选：", [p["title"] + " / " + clean(p["imageinfo"][0].get("extmetadata", {}).get("LicenseShortName", {}).get("value")) for p in items][:8])
     if order:
         norm = lambda t: t.replace("_", " ").lower()
         items.sort(key=lambda p: order.index(norm(p["title"])) if norm(p["title"]) in order else 99)
