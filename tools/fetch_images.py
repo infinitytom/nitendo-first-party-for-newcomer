@@ -57,8 +57,8 @@ def pick(pages, order=None):
     for p in items:
         ii = p["imageinfo"][0]; meta = ii.get("extmetadata", {})
         lic = clean(meta.get("LicenseShortName", {}).get("value"))
-        if not OK.match(lic): continue
-        if not re.search(r"\.(png|jpe?g)$", ii["url"], re.I): continue
+        if not OK.match(lic) or not re.search(r"\.(png|jpe?g)$", ii.get("url", ""), re.I):
+            print("  跳过：", ascii(p["title"]), ascii(lic), ascii(ii.get("url", ""))[-40:]); continue
         return {"title": p["title"], "thumb": ii.get("thumburl") or ii["url"], "url": ii["descriptionurl"],
                 "artist": clean(meta.get("Artist", {}).get("value"))[:60] or "未署名", "license": lic}
     return None
